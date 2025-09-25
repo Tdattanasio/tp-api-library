@@ -1,8 +1,8 @@
 import * as express from "express";
-import * as jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { rolePermissions, permissionMatches} from "../config/permissions";
 
-let adminRight = [];
-let userRight = [];
+const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
 
 export function expressAuthentication(
     request: express.Request,
@@ -19,9 +19,26 @@ export function expressAuthentication(
 
             jwt.verify(token, "your_secret_key", 
                 function(erreur, decoded) {
-                    if(scopes !== undefined) {
-                        // Gestion des droits
+                    if(erreur){
+                        reject(new Error("Invalid token"));
                     }
+                    const payload = decoded as JwtPayload & { role?: string; username?: string };
+                    const role = payload.role || "utilisateur";
+                    const permissions: string[] = rolePermissions[role] || [];
+
+                    if(!scopes || scopes.length === 0) {
+                        (request as any).user = decoded;
+                        return resolve(decoded);
+                    }
+
+                    for(const scope of scopes) {
+                        const ok = permissions.some(p => permissionMatches(p, scope));
+                        if(!ok) {
+                            return reject(new Error("Insufficient permissions"));
+                        }
+                    }
+
+                    (request as any).user = decoded;
                     resolve(decoded);
                 }
 

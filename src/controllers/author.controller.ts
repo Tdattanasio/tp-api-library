@@ -10,12 +10,14 @@ import { CustomError } from "../middlewares/errorHandler";
 export class AuthorController extends Controller {
   // Récupère tous les auteurs
   @Get("/")
+  @Security("jwt", ["author:read"])
   public async getAllAuthors(): Promise<AuthorDTO[]> {
     return authorService.getAllAuthors();
   }
 
   // Récupère un auteur par ID
   @Get("{id}")
+    @Security("jwt", ["author:read"])
   public async getAuthorById(@Path() id: number): Promise<AuthorDTO> {
     let author: Author | null = await authorService.getAuthorById(id);
     if (author === null) {
@@ -29,6 +31,7 @@ export class AuthorController extends Controller {
 
   // Crée un nouvel auteur
   @Post("/")
+    @Security("jwt", ["author:create"])
   public async createAuthor(
     @Body() requestBody: AuthorDTO
   ): Promise<AuthorDTO> {
@@ -45,6 +48,7 @@ export class AuthorController extends Controller {
 
   // Supprime un auteur par ID
   @Delete("{id}")
+    @Security("jwt", ["author:delete"])
   public async deleteAuthor(@Path() id: number): Promise<void> {
     try {
       await authorService.deleteAuthor(id);
@@ -59,6 +63,7 @@ export class AuthorController extends Controller {
 
   // Met à jour un auteur par ID
   @Patch("{id}")
+  @Security("jwt", ["author:update"])
   public async updateAuthor(
     @Path() id: number,
     @Body() requestBody: AuthorDTO

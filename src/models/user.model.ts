@@ -4,12 +4,14 @@ export interface UserAttributes {
   id?: number;
   username: string;
   password: string;
+  role?: string;
 }
 
 export class User extends Model<UserAttributes> implements UserAttributes {
   public id!: number;
   public username!: string;
   public password!: string;
+  public role?: string;
 }
 
 User.init(
@@ -27,6 +29,11 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+      role:{
+        type: DataTypes.STRING,
+        allowNull: false,
+        defaultValue: "utilisateur"
+      }
   },
   {
     sequelize,

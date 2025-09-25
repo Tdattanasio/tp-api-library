@@ -2,6 +2,8 @@ import { CustomError } from "../middlewares/errorHandler";
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.model";
 
+const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
+
 export class AuthenticationService {
     public async authenticate(username: string, password: string): Promise<string> {
         const user = await User.findOne({ where: { username, password } }); 
@@ -12,9 +14,10 @@ export class AuthenticationService {
             throw error;
         }
 
+        const payload = {username: user.username, role: (user as any).role || "utilisateur"}
         const token = jwt.sign(
-            {username: user.username}, 
-            "your_secret_key",
+            payload,
+            JWT_SECRET,
             { expiresIn: '1h' });
         return token;
     }
