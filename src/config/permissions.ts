@@ -2,17 +2,17 @@ export const rolePermissions: Record<string, string[]> = {
     admin: [
         "author:read","author:create","author:update","author:delete",
         "book:read","book:create","book:update","book:delete",
-        "bookCopy:read","bookCopy:create","bookCopy:update","bookCopy:delete"
+        "bookcopy:read","bookcopy:create","bookcopy:update","bookcopy:delete"
     ],
     gerant: [
         "author:read","author:create","author:update",
         "book:read","book:create","book:update",
-        "bookCopy:read","bookCopy:create","bookCopy:update","bookCopy:delete"
+        "bookcopy:read","bookcopy:create","bookcopy:update","bookcopy:delete"
     ],
     utilisateur: [
         "author:read",
         "book:read","book:create",
-        "bookCopy:read"
+        "bookcopy:read"
     ]
 };
 
